@@ -2,9 +2,16 @@ package App::Prove::History;
 
 use warnings;
 use strict;
-use Getopt::Long;
+
+use DBI;
 use Carp 'croak';
-use App::Prove::History::State;
+use Class::BuildMethods qw/
+    db
+    exit_status
+/;
+
+use aliased 'App::Prove::History::State';
+use aliased 'App::Prove::History::Builder';
 
 =head1 NAME
 
@@ -34,15 +41,27 @@ use constant STATE_DB => __PACKAGE__->IS_UNIXY ? '.provedb'   : '_provedb';
 
 sub _initialize {
     my $self = shift;
-    $self->{db} = STATE_DB;
+    $self->db(STATE_DB);
     $self->SUPER::_initialize(@_);
 }
 
-sub db {
+sub dbh {
     my $self = shift;
-    return $self->{db} unless @_;
-    $self->{db} = shift;
-    return $self;
+    if (@_) {
+        $self->{dbh} = shift;
+        return $self;
+    }
+    unless ( $self->{dbh} ) {
+        my $db = $self->db;
+        my $dbh = DBI->connect( 
+            "dbi:SQLite:dbname=$db",
+            '', 
+            '', 
+            { RaiseError => 1 },
+        );
+        $self->{dbh} = $dbh;
+    }
+    return $self->{dbh};
 }
 
 sub process_args {
@@ -67,22 +86,16 @@ sub process_args {
     $self->SUPER::process_args(@args);
 }
 
-sub exit_status {
-    my $self = shift;
-    return $self->{exit} unless @_;
-    $self->{exit} = shift;
-    return $self;
-}
-
 sub run {
     my $self = shift;
+    $self->state_manager->builder( $self->builder_class->new({ dbh => $self->dbh }) );
+    $self->state_manager->dbh($self->dbh);
     $self->exit_status($self->SUPER::run ? 0 : 1);
     return $self;
 }
 
-sub state_class {
-    'App::Prove::History::State';
-}
+sub state_class   { return State }
+sub builder_class { return Builder }
 
 =head1 AUTHOR
 

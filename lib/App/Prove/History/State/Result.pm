@@ -2,7 +2,7 @@ package App::Prove::History::State::Result;
 
 use strict;
 use warnings;
-use App::Prove::History::State::Result::Test;
+use aliased 'App::Prove::History::State::Result::Test';
 
 use base 'App::Prove::State::Result';
 
@@ -15,7 +15,7 @@ identical interface.
 =cut
 
 sub test_class {
-    return 'App::Prove::History::State::Result::Test';
+    return Test;
 }
 
 1;

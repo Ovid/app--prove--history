@@ -2,24 +2,28 @@ package App::Prove::History::State;
 
 use strict;
 use warnings;
-use App::Prove::History::State::Result;
+
+use DateTime;
+use Class::BuildMethods qw/
+    dbh
+    builder
+    start_time
+    end_time
+/;
+
+use aliased 'App::Prove::History::State::Result';
+use aliased 'App::Prove::History::Builder';
 
 use base 'App::Prove::State';
 
 sub new {
     my $class = shift;
     my $self = $class->SUPER::new(@_);
-}
-
-sub _dbh {
-    my $self = shift;
-    return $self->{dbh} unless @_;
-    $self->{dbh} = shift;
-    return $self;
+    $self->start_time(DateTime->now);
 }
 
 sub result_class {
-    return 'App::Prove::History::State::Result';
+    return Result;
 }
 
 sub save {
@@ -29,7 +33,19 @@ use Data::Dumper::Simple;
 $Data::Dumper::Indent   = 1;
 $Data::Dumper::Sortkeys = 1;
     print STDERR Dumper($self);
-    $self->SUPER::save;
+    $self->builder->build;
+    $self->end_time(DateTime->now);
+    $self->SUPER::save(@_);
+    $self->_save_state;
+}
+
+sub _save_state {
+    my $self = shift;
+    my $sql = <<'    END_SQL';
+    INSERT INTO suite (start_time, end_time)
+    VALUES (?, ?)
+    END_SQL
+    $self->dbh->do($sql, {}, $self->start_time, $self->end_time);
 }
 
 1;

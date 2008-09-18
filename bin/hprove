@@ -3,6 +3,10 @@
 use strict;
 use App::Prove::History;
 
+unless ( grep { /^--state/ } @ARGV ) {
+    unshift @ARGV => '--state=save';
+}
+
 my $app = App::Prove::History->new;
 $app->process_args(@ARGV);
 $app->run;
