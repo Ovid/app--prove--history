@@ -35,17 +35,44 @@ $Data::Dumper::Sortkeys = 1;
     print STDERR Dumper($self);
     $self->builder->build;
     $self->end_time(DateTime->now);
-    $self->SUPER::save(@_);
+#    $self->SUPER::save(@_);
     $self->_save_state;
 }
 
 sub _save_state {
     my $self = shift;
     my $sql = <<'    END_SQL';
-    INSERT INTO suite (start_time, end_time)
-    VALUES (?, ?)
+    INSERT INTO suite (version, start_time, end_time)
+    VALUES (?, ?, ?)
     END_SQL
-    $self->dbh->do($sql, {}, $self->start_time, $self->end_time);
+    $self->dbh->do(
+        $sql, 
+        {}, 
+        $App::Prove::History::VERSION,
+        $self->start_time, 
+        $self->end_time
+    );
+    my $id = $self->dbh->last_insert_id(undef, undef, 'suite', 'id');
+    $self->_save_tests($id);
+    $self->dbh->commit;
+}
+
+sub _save_tests {
+    my ( $self, $id ) = @_;
+
+    my $sql = <<'    END_SQL';
+    INSERT INTO test (suite_id, name, mtime, result, run_time, num_todo)
+    VALUES (?,?,?,?,?,?)
+    END_SQL
+    my $sth = $self->dbh->prepare($sql);
+    foreach my $test ($self->results->tests) {
+        my $name     = $test->name;
+        my $mtime    = $test->mtime;
+        my $result   = $test->result;
+        my $run_time = $test->run_time;
+        my $num_todo = $test->num_todo;
+        $sth->execute($id, $name, $mtime, $result, $run_time, $num_todo);
+    }
 }
 
 1;

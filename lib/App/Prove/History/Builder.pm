@@ -18,6 +18,7 @@ sub build {
 
     my $dbh = $self->_dbh;
     $dbh->do($self->_sql_suite_table);
+    $dbh->do($self->_sql_test_table);
     return $self;
 }
 
@@ -25,8 +26,23 @@ sub _sql_suite_table {
     return <<'    END_SQL';
     CREATE TABLE IF NOT EXISTS suite (
         id         INTEGER PRIMARY KEY,
+        version    REAL     NOT NULL,
         start_time DATETIME NOT NULL,
         end_time   DATETIME NOT NULL
+    );
+    END_SQL
+}
+
+sub _sql_test_table {
+    return <<'    END_SQL';
+    CREATE TABLE IF NOT EXISTS test (
+        id        INTEGER PRIMARY KEY,
+        suite_id  INTEGER NOT NULL,
+        name      VARCHAR(255) NOT NULL,
+        mtime     REAL NULL,
+        result    INT NOT NULL,
+        run_time  REAL NOT NULL,
+        num_todo  INT NOT NULL
     );
     END_SQL
 }

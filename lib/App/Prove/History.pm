@@ -57,7 +57,10 @@ sub dbh {
             "dbi:SQLite:dbname=$db",
             '', 
             '', 
-            { RaiseError => 1 },
+            { 
+                RaiseError => 1,
+                AutoCommit => 0,
+            },
         );
         $self->{dbh} = $dbh;
     }

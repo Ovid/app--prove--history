@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     requires          => {
         'Class::BuildMethods' => 0.22,
         'DateTime'            => 0.4304,
-        'DBI'                 => 0,
+        'DBI'                 => 1.43,
         'DBD::SQLite'         => 1.14,
         'aliased'             => 0.22,
     },
