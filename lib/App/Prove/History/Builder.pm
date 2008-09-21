@@ -18,7 +18,8 @@ sub build {
 
     my $dbh = $self->_dbh;
     $dbh->do($self->_sql_suite_table);
-    $dbh->do($self->_sql_test_table);
+    $dbh->do($self->_sql_test_result_table);
+    $dbh->do($self->_sql_test_name_table);
     return $self;
 }
 
@@ -33,16 +34,25 @@ sub _sql_suite_table {
     END_SQL
 }
 
-sub _sql_test_table {
+sub _sql_test_result_table {
     return <<'    END_SQL';
-    CREATE TABLE IF NOT EXISTS test (
+    CREATE TABLE IF NOT EXISTS test_result (
         id        INTEGER PRIMARY KEY,
         suite_id  INTEGER NOT NULL,
-        name      VARCHAR(255) NOT NULL,
+        name_id   INTEGER NOT NULL,
         mtime     REAL NULL,
         result    INT NOT NULL,
         run_time  REAL NOT NULL,
         num_todo  INT NOT NULL
+    );
+    END_SQL
+}
+
+sub _sql_test_name_table {
+    return <<'    END_SQL';
+    CREATE TABLE IF NOT EXISTS test_name (
+        id   INTEGER PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
     );
     END_SQL
 }

@@ -60,89 +60,43 @@ sub _save_state {
 sub _save_tests {
     my ( $self, $id ) = @_;
 
-    my $sql = <<'    END_SQL';
-    INSERT INTO test (suite_id, name, mtime, result, run_time, num_todo)
+    my $dbh = $self->dbh;
+    my $name_sth = $dbh->prepare(<<'    END_SQL');
+    INSERT INTO test_name (name) VALUES (?)
+    END_SQL
+
+    my $id_for = $dbh->selectall_hashref(<<'    END_SQL', 'name');
+    SELECT id, name FROM test_name
+    END_SQL
+
+    my $result_sth = $dbh->prepare(<<'    END_SQL');
+    INSERT INTO test_result (suite_id, name_id, mtime, result, run_time, num_todo)
     VALUES (?,?,?,?,?,?)
     END_SQL
-    my $sth = $self->dbh->prepare($sql);
     foreach my $test ($self->results->tests) {
         my $name     = $test->name;
         my $mtime    = $test->mtime;
         my $result   = $test->result;
         my $run_time = $test->run_time;
         my $num_todo = $test->num_todo;
-        $sth->execute($id, $name, $mtime, $result, $run_time, $num_todo);
+
+        my $name_id = $id_for->{$name}{id} || $self->_test_name_id($name);
+
+        $result_sth->execute( 
+            $id, 
+            $name_id, 
+            $mtime, 
+            $result, 
+            $run_time,
+            $num_todo,
+        );
     }
 }
 
-1;
+sub _test_name_id {
+    my ( $self, $name ) = @_;
+    $self->dbh->do('INSERT INTO test_name (name) VALUES (?)', {}, $name);
+    return $self->dbh->last_insert_id(undef, undef, 'test_name', 'id');
+}
 
-__END__
-$self = bless( {
-  '_' => bless( {
-    'generation' => 1,
-    'tests' => {
-      't/00-load.t' => bless( {
-        'elapsed' => '0.119601964950562',
-        'gen' => 1,
-        'last_pass_time' => '1220538486.85619',
-        'last_result' => 0,
-        'last_run_time' => '1220538486.85619',
-        'last_todo' => 0,
-        'name' => 't/00-load.t',
-        'seq' => 1,
-        'total_passes' => 1
-      }, 'App::Prove::History::State::Result::Test' ),
-      't/boilerplate.t' => bless( {
-        'elapsed' => '0.0304319858551025',
-        'gen' => 1,
-        'last_pass_time' => '1220538486.89502',
-        'last_result' => 0,
-        'last_run_time' => '1220538486.89502',
-        'last_todo' => 0,
-        'name' => 't/boilerplate.t',
-        'seq' => 2,
-        'total_passes' => 1
-      }, 'App::Prove::History::State::Result::Test' ),
-      't/builder.t' => bless( {
-        'elapsed' => '0.105643033981323',
-        'gen' => 1,
-        'last_pass_time' => '1220538487.00787',
-        'last_result' => 0,
-        'last_run_time' => '1220538487.00787',
-        'last_todo' => 0,
-        'name' => 't/builder.t',
-        'seq' => 3,
-        'total_passes' => 1
-      }, 'App::Prove::History::State::Result::Test' ),
-      't/pod-coverage.t' => bless( {
-        'elapsed' => '0.0723168849945068',
-        'gen' => 1,
-        'last_pass_time' => '1220538487.08755',
-        'last_result' => 0,
-        'last_run_time' => '1220538487.08755',
-        'last_todo' => 0,
-        'name' => 't/pod-coverage.t',
-        'seq' => 4,
-        'total_passes' => 1
-      }, 'App::Prove::History::State::Result::Test' ),
-      't/pod.t' => bless( {
-        'elapsed' => '0.0706801414489746',
-        'gen' => 1,
-        'last_pass_time' => '1220538487.16538',
-        'last_result' => 0,
-        'last_run_time' => '1220538487.16538',
-        'last_todo' => 0,
-        'name' => 't/pod.t',
-        'seq' => 5,
-        'total_passes' => 1
-      }, 'App::Prove::History::State::Result::Test' )
-    },
-    'version' => 1
-  }, 'App::Prove::History::State::Result' ),
-  'extension' => '.t',
-  'select' => [],
-  'seq' => 6,
-  'should_save' => 1,
-  'store' => '.prove'
-}, 'App::Prove::History::State' );
+1;
