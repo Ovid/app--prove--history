@@ -37,6 +37,26 @@ use constant STATE_DB => __PACKAGE__->IS_UNIXY ? '.provedb'   : '_provedb';
     $app->run;
     exit($app->exit_status);   # if you care about exit status
 
+=head1 DESCRIPTION
+
+This experimental module lets you capture test suite results over time.  Basic
+usage is:
+
+  bin/hprove t/
+
+In other words, use it just like the regular C<prove> command.
+
+C<hprove> is not installed.  You have to do this manually as this is all very
+experimental.
+
+To see the test results:
+
+  sqlite3 .provedb
+
+If you prefer another database name, use the C<--db> switch.
+
+  bin/hprove --db=my_project.db t/
+
 =cut
 
 sub _initialize {
