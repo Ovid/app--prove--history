@@ -14,6 +14,10 @@ exit( $app->exit_status );
 
 __END__
 
+=encoding utf8
+
+=for :stopwords hprove prove's .proverc arisdottle VMS todos
+
 =head1 NAME
 
 hprove - Run test suites and save results to a database.
@@ -93,7 +97,7 @@ F<.proverc> and is sought only in the current directory.
 =head2 Reading from C<STDIN>
 
 If you have a list of tests (or URLs, or anything else you want to test) in a
-file, you can add them to your tests by using a '-':
+file, you can add them to your tests by using a C<->:
 
  prove - < my_list_of_things_to_test.txt
 
@@ -117,11 +121,11 @@ colored output will not be available.
 =head2 Arguments to Tests
 
 It is possible to supply arguments to tests. To do so separate them from
-prove's own arguments with the arisdottle, '::'. For example
+prove's own arguments with the I<arisdottle>, C<::>. For example
 
  prove -v t/mytest.t :: --url http://example.com
  
-would run F<t/mytest.t> with the options '--url http://example.com'.
+would run F<t/mytest.t> with the options C<--url http://example.com>.
 When running multiple tests they will each receive the same arguments.
 
 =head2 C<--exec>
@@ -139,14 +143,14 @@ switch:
 
 If you need to make sure your diagnostics are displayed in the correct
 order relative to test results you can use the C<--merge> option to
-merge the test scripts' STDERR into their STDOUT. 
+merge the test scripts' C<STDERR> into their C<STDOUT>.
 
-This guarantees that STDOUT (where the test results appear) and STDOUT
+This guarantees that C<STDOUT> (where the test results appear) and C<STDOUT>
 (where the diagnostics appear) will stay in sync. The harness will
-display any diagnostics your tests emit on STDERR.
+display any diagnostics your tests emit on C<STDERR>.
 
 Caveat: this is a bit of a kludge. In particular note that if anything
-that appears on STDERR looks like a test result the test harness will
+that appears on C<STDERR> looks like a test result the test harness will
 get confused. Use this option only if you understand the consequences
 and can live with the risk.
 
@@ -194,7 +198,7 @@ new problems have been introduced.
 
 =item C<all>
 
-Run all tests in normal order. Multple options may be specified, so to
+Run all tests in normal order. Multiple options may be specified, so to
 run all tests with the failures from last time first:
 
     $ prove -b --state=failed,all,save
@@ -218,7 +222,7 @@ This combination of options may also be specified thus
 
 =item C<todo>
 
-Run any tests with todos.
+Run any tests with I<todo>s.
 
 =item C<slow>
 
