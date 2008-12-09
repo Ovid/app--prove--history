@@ -5,11 +5,6 @@ use strict;
 
 use DBI;
 use Carp 'croak';
-use Class::BuildMethods qw/
-    db
-    exit_status
-/;
-
 use aliased 'App::Prove::History::State';
 use aliased 'App::Prove::History::Builder';
 
@@ -19,12 +14,21 @@ App::Prove::History - Track test suite changes over time.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 use base 'App::Prove';
+
+BEGIN {
+    __PACKAGE__->mk_methods(
+        qw<
+          db
+          exit_status
+          >
+    );
+}
 
 use constant STATE_DB => __PACKAGE__->IS_UNIXY ? '.provedb'   : '_provedb';
 
@@ -53,9 +57,14 @@ To see the test results:
 
   sqlite3 .provedb
 
+See C<App::Prove::History::Builder> for a schema description.
+
 If you prefer another database name, use the C<--db> switch.
 
   bin/hprove --db=my_project.db t/
+
+This code is experimental.  The schema is likely to change.  The core
+interface might change.  If you want something to not change, let me know.
 
 =cut
 
@@ -111,14 +120,21 @@ sub process_args {
 
 sub run {
     my $self = shift;
-    $self->state_manager->builder( $self->builder_class->new({ dbh => $self->dbh }) );
-    $self->state_manager->dbh($self->dbh);
-    $self->exit_status($self->SUPER::run ? 0 : 1);
+
+    my $dbh = $self->dbh;
+    $self->state_manager( $self->state_class->new( {
+        dbh => $dbh,
+        store => App::Prove->STATE_FILE,
+    } ) );
+    $self->state_manager->builder(
+        $self->builder_class->new( { dbh => $dbh } ) );
+    $self->state_manager->dbh($dbh);
+    $self->exit_status( $self->SUPER::run ? 0 : 1 );
     return $self;
 }
 
-sub state_class   { return State }
-sub builder_class { return Builder }
+sub state_class   { State }
+sub builder_class { Builder }
 
 =head1 AUTHOR
 
@@ -126,19 +142,17 @@ Curtis "Ovid" Poe, C<< <ovid at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-app-prove-state-history at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-Prove-History>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
+Please report any bugs or feature requests to C<bug-app-prove-state-history at rt.cpan.org>, 
+or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-Prove-History>.  I will
+be notified, and then you'll automatically be notified of progress on your bug
+as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc App::Prove::History
-
 
 You can also look for information at:
 
@@ -162,7 +176,6 @@ L<http://search.cpan.org/dist/App-Prove-History>
 
 =back
 
-
 =head1 ACKNOWLEDGEMENTS
 
 
@@ -173,7 +186,6 @@ Copyright 2008 Curtis "Ovid" Poe, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
 
-1; # End of App::Prove::History
+1;

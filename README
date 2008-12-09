@@ -25,6 +25,9 @@ To see the test results:
 
   sqlite3 .provedb
 
+Read the documentation for C<App::Prove::History::Builder> to understand the
+schema.
+
 If you prefer another database name, use the C<--db> switch.
 
   bin/hprove --db=my_project.db t/

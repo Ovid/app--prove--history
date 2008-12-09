@@ -6,6 +6,10 @@ use warnings;
 use DBI;
 use Test::Most qw/no_plan die/;
 
+BEGIN {
+    use lib 'lib';
+}
+
 my $test_db = 't/tmp/test.db';
 my $dbh =
   DBI->connect( "dbi:SQLite:dbname=$test_db", '', '', { RaiseError => 1 }, );
