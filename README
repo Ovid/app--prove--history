@@ -9,6 +9,10 @@ To install this module, run the following commands:
 	./Build test
 	./Build install
 
+The latest development version of this can be obtained via:
+
+  git clone git://github.com/Ovid/app--prove--history.git
+
 BASIC USE
 
 This experimental module lets you capture test suite results over time.  Basic
