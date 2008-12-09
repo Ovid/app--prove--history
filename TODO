@@ -1,3 +1,4 @@
-- capture TAP
-- implement notes on suite table
-- reimplement App::Prove::State's query engine so we don't depend on it
+- Capture TAP
+- Implement notes on suite table
+- Reimplement App::Prove::State's query engine so we don't depend on it
+- Need something like DBIx::Migration, but that module appears to be broken.

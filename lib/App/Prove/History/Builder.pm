@@ -194,6 +194,25 @@ sub _sql_test_result_table {
     END_SQL
 }
 
+=head2 C<test_name>
+
+    CREATE TABLE IF NOT EXISTS test_name (
+        id   INTEGER PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+    );
+
+=over 4
+
+=item * C<name>
+
+The name of the test (typically a filename).
+
+Note that this doesn't match xUnit conventions.  Maybe we'll change this.
+
+=back
+
+=cut
+
 sub _sql_test_name_table {
     return <<'    END_SQL';
     CREATE TABLE IF NOT EXISTS test_name (
