@@ -1,5 +1,9 @@
 Revision history for App-Prove-History
 
+0.02    2008-12-08
+        - Applied a documentation patch from Lars Dɪᴇᴄᴋᴏᴡ.
+        - Reworked the schema.
+
 0.01    
         Save test suite results over time.
 
