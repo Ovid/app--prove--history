@@ -1,0 +1,3 @@
+- capture TAP
+- implement notes on suite table
+- reimplement App::Prove::State's query engine so we don't depend on it
