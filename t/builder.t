@@ -10,7 +10,11 @@ BEGIN {
     use lib 'lib';
 }
 
-my $test_db = 't/tmp/test.db';
+unless (-d 't/data') {
+    mkdir 't/data' or die "Cannot mkdir (t/data): $!";
+}
+
+my $test_db = 't/data/test.db';
 my $dbh =
   DBI->connect( "dbi:SQLite:dbname=$test_db", '', '', { RaiseError => 1 }, );
 

@@ -10,3 +10,5 @@ t/00-load.t
 t/builder.t
 xt/author/pod-coverage.t
 xt/author/pod.t
+Makefile.PL
+META.yml
