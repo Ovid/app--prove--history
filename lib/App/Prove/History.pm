@@ -20,9 +20,10 @@ Version 0.02
 =cut
 
 our $VERSION = '0.02';
-our @ISA     = 'App::Prove';
+our @ISA;
 
 BEGIN {
+    @ISA = 'App::Prove';
     __PACKAGE__->mk_methods(
         qw<
           db
