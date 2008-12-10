@@ -5,6 +5,7 @@ use strict;
 
 use DBI;
 use Carp 'croak';
+use App::Prove 3.15;
 use aliased 'App::Prove::History::State';
 use aliased 'App::Prove::History::Builder';
 
@@ -19,7 +20,7 @@ Version 0.02
 =cut
 
 our $VERSION = '0.02';
-use base 'App::Prove';
+our @ISA     = 'App::Prove';
 
 BEGIN {
     __PACKAGE__->mk_methods(
