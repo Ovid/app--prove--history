@@ -1,0 +1,35 @@
+---
+abstract: 'Track test suite changes over time.'
+author:
+  - "Curtis \"Ovid\" Poe <ovid@cpan.org>"
+build_requires:
+  Test::Most: 0.11
+configure_requires:
+  Module::Build: 0.36
+dynamic_config: 0
+generated_by: 'Module::Build version 0.3607'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
+name: App-Prove-History
+provides:
+  App::Prove::History:
+    file: lib/App/Prove/History.pm
+    version: 0.02
+  App::Prove::History::Builder:
+    file: lib/App/Prove/History/Builder.pm
+    version: 0.02
+  App::Prove::History::State:
+    file: lib/App/Prove/History/State.pm
+    version: 0.02
+recommends:
+  Time::HiRes: 1.86
+requires:
+  DBD::SQLite: 1.14
+  DBI: 1.43
+  Test::Harness: 3.15
+  aliased: 0.22
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.02

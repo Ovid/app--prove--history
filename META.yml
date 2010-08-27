@@ -1,0 +1,33 @@
+---
+name: App-Prove-History
+version: 0.02
+author:
+  - 'Curtis "Ovid" Poe <ovid@cpan.org>'
+abstract: Track test suite changes over time.
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  DBD::SQLite: 1.14
+  DBI: 1.43
+  DateTime::HiRes: 0.01
+  Test::Harness: 3.15
+  aliased: 0.22
+build_requires:
+  Test::Most: 0.11
+recommends:
+  Time::HiRes: 1.86
+provides:
+  App::Prove::History:
+    file: lib/App/Prove/History.pm
+    version: 0.02
+  App::Prove::History::Builder:
+    file: lib/App/Prove/History/Builder.pm
+    version: 0.02
+  App::Prove::History::State:
+    file: lib/App/Prove/History/State.pm
+    version: 0.02
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
